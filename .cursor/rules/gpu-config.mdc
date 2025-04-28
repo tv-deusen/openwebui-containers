@@ -1,0 +1,15 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+# cursor: service-name ollama
+# cursor: priority 950
+# cursor: hardware-constraint nvidia-gpu
+
+**NVIDIA GPU Validation Rules**
+
+- Pre-flight Check Requirement:
+  ```bash
+  nvidia-smi >/dev/null 2>&1 || echo "GPU not detected"

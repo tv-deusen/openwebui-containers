@@ -1,0 +1,24 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**monitoring-setup.mdc**
+```markdown
+---
+# cursor: service-name uptime-kuma
+# cursor: priority 850
+# cursor: dependency-network ai-network
+
+**Uptime Kuma Monitoring Configuration**
+
+1. Service Requirements:
+   - Use official louislam/uptime-kuma:1 image
+   - Expose on port 3001:3000
+   - Persistent volume for monitoring data
+
+2. Monitoring Targets:
+   ```yaml
+   # Internal endpoints to monitor
+   - Open WebUI: http://open-webui:8080
+   - Ollama: http://ollama:11434

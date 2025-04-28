@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**network-security.mdc**
+```markdown
+---
+# cursor: pattern ports|expose
+# cursor: priority 800
+# cursor: security-level medium
+
+**Network Security Rules**
+
+1. Port Configuration:
+   - Ollama: 11434
+   - Open WebUI: 8080
+   - Uptime Kuma: 3001
+
+2. Access Restrictions:
+   - No public ports for internal communication
+   - All inter-service communication through ai-network
+   - Block external access to Ollama API port (11434) if possible

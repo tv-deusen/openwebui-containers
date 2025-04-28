@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+# cursor: service-dependency open-webui
+# cursor: priority 900
+
+**Service Dependency Rules**
+
+1. Open WebUI must:
+   - Depend_on Ollama service
+   - Use environment variable:
+     ```yaml
+     OLLAMA_API_BASE: http://ollama:11434
+     ```
+   
+2. Startup Order:
+   - Ollama must start first
+   - Uptime Kuma starts last
+   - Health checks for dependency verification

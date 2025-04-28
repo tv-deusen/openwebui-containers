@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+# cursor: file-pattern docker-compose.yml
+# cursor: priority 1000
+# cursor: entity-focus services,volumes,networks,environment
+
+**Docker Compose Configuration Rules for AI Stack**
+
+1. Mandatory Services:
+   - ollama (with NVIDIA GPU support)
+   - open-webui (no authentication)
+   - uptime-kuma (monitoring both services)
+
+2. Network Requirements:
+   - Create shared 'ai-network' bridge network
+   - All services must connect to ai-network
+
+3. Volume Management:
+   - Persistent volumes for all stateful services
+   - Map ollama volume to /root/.ollama
+   - Map open-webui volume to /app/backend/data
+
+4. GPU Configuration:
+   ```yaml
+   deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: nvidia
+             count: 1
+             capabilities: [gpu]

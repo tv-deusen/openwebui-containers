@@ -1,0 +1,26 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+# cursor: file-pattern start-services.sh
+# cursor: execution-permission +x
+# cursor: post-creation-step
+
+**Automatic Browser Opening Rules**
+
+1. Execution Requirements:
+   - Must be run after docker-compose.yml creation
+   - Requires curl in containers for health checks
+   - Handles Linux/macOS/Windows via OSTYPE detection
+
+2. Health Check Logic:
+   - Waits for HTTP 200 responses from both services
+   - Uses docker-compose exec for container checks
+   - Includes 2-second retry intervals
+
+3. Browser Handling:
+   - Opens Open WebUI on port 8080
+   - Opens Uptime Kuma on port 3001
+   - Falls back to manual URL display

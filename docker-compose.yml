@@ -1,0 +1,87 @@
+name: mylittlellm
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/11434 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    volumes:
+      - open-webui-data:/app/backend/data
+    ports:
+      - "8080:8080"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - DISABLE_AUTH=True
+      - ENABLE_SIGNUP=False
+      - DEFAULT_USER_ROLES=admin
+      - AUTH_MODE=none
+      - WEBUI_AUTH=none
+      - ENABLE_OPENAI_API=False
+      - ENABLE_DIRECT_CONNECTIONS=False
+      - CORS_ALLOW_ORIGIN=http://localhost:8080,http://127.0.0.1:8080
+    depends_on:
+      - ollama
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:8080 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3001:3001"
+    depends_on:
+      - ollama
+      - open-webui
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3001/health || exit 1"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+networks:
+  ai-network:
+    name: ai-network
+    driver: bridge
+
+volumes:
+  ollama-data:
+    name: ollama-data
+  open-webui-data:
+    name: open-webui-data
+  uptime-kuma-data:
+    name: uptime-kuma-data 

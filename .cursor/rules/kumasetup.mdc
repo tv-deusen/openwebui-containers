@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# cursor: post-creation-step
+**Monitoring Configuration Steps**
+
+1. Access Uptime Kuma at http://localhost:3001
+2. Add monitors for:
+   - Service: Open WebUI
+     URL: http://open-webui:8080
+   - Service: Ollama
+     URL: http://ollama:11434
+3. Set check interval to 60 seconds
+4. Configure notification channels if needed
