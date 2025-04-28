@@ -4,6 +4,7 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+    runtime: nvidia
     volumes:
       - ollama-data:/root/.ollama
     ports:
