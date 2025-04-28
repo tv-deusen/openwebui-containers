@@ -16,7 +16,7 @@ This Docker Compose configuration provides an AI stack with three main services:
 
 1. Start the services:
    ```bash
-   docker compose up -d
+   just start
    ```
 
 2. Access the services:
@@ -28,7 +28,7 @@ This Docker Compose configuration provides an AI stack with three main services:
 After starting the services, configure Uptime Kuma to monitor both Ollama and Open WebUI:
 
 1. Access Uptime Kuma at http://localhost:3001
-2. Create a new account during first login
+2. Create a new account during first login (not really yet)
 3. Add monitors for both services:
 
 ### Basic Health Check for Open WebUI
