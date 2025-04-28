@@ -38,20 +38,20 @@ rebuild: down
 
 # Follow logs for all services
 logs:
-    @echo "Following logs for all services..."
+    @echo "Following logs for all services (including watchtower)..."
     @docker compose logs -f
 
-# Follow logs for a specific service (e.g., just logs ollama)
+# Follow logs for a specific service (e.g., just logs ollama | just logs watchtower)
 logs-service service:
     @echo "Following logs for service '{{ service }}'..."
     @docker compose logs -f {{ service }}
 
 # List running services and their status
 status:
-    @echo "Checking service status..."
+    @echo "Checking service status (including watchtower)..."
     @docker compose ps
 
 # Pull the latest images for all services
 pull:
-    @echo "Pulling latest images..."
+    @echo "Pulling latest images (including watchtower)..."
     @docker compose pull

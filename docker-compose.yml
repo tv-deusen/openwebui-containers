@@ -74,6 +74,19 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 3000 open-webui ollama uptime-kuma
+    depends_on:
+      - open-webui
+      - ollama
+      - uptime-kuma
+    restart: unless-stopped
+    
+
 networks:
   ai-network:
     name: ai-network
