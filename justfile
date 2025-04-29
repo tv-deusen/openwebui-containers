@@ -27,19 +27,21 @@ check-docker:
 create-backup:
     @echo "Creating backup of volumes..."
     @mkdir -p ./backups
-    @echo "Creating backup of all services..."
+    @echo "Creating backup of uptime-kuma-data volume (test)..."
+    @if ! docker volume inspect uptime-kuma-data >/dev/null 2>&1; then \
+        echo "❌ Volume 'uptime-kuma-data' does not exist."; \
+        exit 1; \
+    fi
     @docker run --rm \
-        -v /var/run/docker.sock:/var/run/docker.sock:ro \
-        -v $$PWD/backups:/archive \
-        -v ollama-data:/backup/ollama-data:ro \
-        -v open-webui-data:/backup/open-webui-data:ro \
-        -v uptime-kuma-data:/backup/uptime-kuma-data:ro \
-        offen/docker-volume-backup:latest \
-        backup \
-        --filename "services-backup" \
-        --overwrite \
-    && echo "✅ Backup created successfully at ./backups/services-backup.tar.gz" \
-    || echo "❌ Backup failed"
+        -v uptime-kuma-data:/data:ro \
+        -v ./backups:/backup \
+        alpine:latest \
+        tar -czf /backup/kuma-backup.tar.gz -C /data .
+    @if [ $$? -ne 0 ]; then \
+        echo "❌ Backup failed"; \
+        exit 1; \
+    fi
+    @echo "✅ Backup created successfully at ./backups/kuma-backup.tar.gz"
 
 # Restore from the backup
 restore-backup:
@@ -80,7 +82,7 @@ stop: check-docker create-backup
     @docker compose stop
 
 # Stop and remove containers and networks (keeps volumes)
-down: check-docker create-backup
+down: check-docker
     @echo "Stopping and removing containers and networks..."
     @docker compose down
 

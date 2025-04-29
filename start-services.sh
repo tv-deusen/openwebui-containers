@@ -4,8 +4,25 @@
 if command -v nvidia-smi &>/dev/null; then
   echo "NVIDIA GPU detected"
   nvidia-smi
+  
+  # Check if nvidia-container-toolkit is installed
+  if ! command -v nvidia-container-toolkit &>/dev/null; then
+    echo "ERROR: nvidia-container-toolkit is not installed!"
+    echo "Please install the NVIDIA Container Toolkit:"
+    echo "https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html"
+    exit 1
+  fi
+  
+  # Check if Docker can access the GPU
+  if ! docker info | grep -q "Runtimes:.*nvidia"; then
+    echo "ERROR: Docker cannot access the NVIDIA GPU!"
+    echo "The NVIDIA runtime is not configured for Docker."
+    echo "Please check your Docker daemon configuration."
+    exit 1
+  fi
 else
   echo "WARNING: NVIDIA GPU not detected. GPU acceleration will not be available."
+  echo "Continuing without GPU acceleration..."
 fi
 
 # Start services
@@ -17,7 +34,7 @@ echo "Waiting for services to be ready..."
 
 # Wait for Ollama to be ready
 echo "Checking Ollama health..."
-until docker compose exec -T open-webui curl -s --fail http://ollama:11434/api/tags >/dev/null 2>&1; do
+until docker exec -i ollama bash -c "cat < /dev/null > /dev/tcp/localhost/11434" &>/dev/null; do
   echo "Waiting for Ollama to be ready..."
   sleep 2
 done

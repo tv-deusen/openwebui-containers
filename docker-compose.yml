@@ -4,7 +4,6 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
-    runtime: nvidia
     volumes:
       - ollama-data:/root/.ollama
     ports:
@@ -19,7 +18,7 @@ services:
     networks:
       - ai-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      test: ["CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/localhost/11434 || exit 1"]
       interval: 20s
       timeout: 10s
       retries: 5
@@ -54,7 +53,7 @@ services:
     networks:
       - ai-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8080 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -81,7 +80,7 @@ services:
     networks:
       - ai-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:3001/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
       interval: 1m30s
       timeout: 30s
       retries: 5
